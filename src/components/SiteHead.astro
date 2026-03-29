@@ -1,17 +1,19 @@
 ---
+import {
+  GITHUB_PROJECT_URL,
+  QR_DEFAULT_SRC,
+  QR_LIGHT_SRC,
+} from '../auramirror/config'
+
 const menu = [
-  {
-    id: 'about',
-    text: 'About',
-  },
-  {
-    id: 'work',
-    text: 'Work',
-  },
-  {
-    id: 'contact',
-    text: 'Contact',
-  },
+  { id: 'about', text: 'Avatar' },
+  { id: 'work', text: 'Try-On' },
+  { id: 'contact', text: 'History' },
+]
+
+const authMenu = [
+  { id: 'auth', text: 'Login|Register', action: 'auth' },
+  { id: 'signout', text: 'Sign Out', action: 'signout' },
 ]
 ---
 
@@ -36,7 +38,6 @@ const menu = [
           </path>
         </svg>
 
-        <span class="u-sr-only">Antoine Wodniack</span>
       </a>
     </div><!-- .sb-logo -->
 
@@ -56,38 +57,29 @@ const menu = [
             </li>
           ))
         }
+
+        {
+          authMenu.map((item) => (
+            <li
+              class="sb__item js-menu-item am-auth-nav-item"
+              data-auth-action={item.action}
+              hidden={item.action === 'signout'}
+            >
+              <button
+                type="button"
+                class="js-menu-link am-auth-nav-button"
+                aria-label={item.text}
+                aria-haspopup={item.action === 'auth' ? 'dialog' : undefined}
+                aria-controls={item.action === 'auth' ? 'am-auth-overlay' : undefined}
+                aria-expanded="false"
+              >
+                <span class="sb__text">{item.text}</span>
+              </button>
+            </li>
+          ))
+        }
       </ul>
     </nav><!-- .sb-menu -->
-
-    <ul class="sb-socials">
-      <li class="sb__item">
-        <a href="https://codepen.io/wodniack" target="_blank" rel="noopener">
-          <span
-            class="sb__icon sb__icon--codepen"
-            style="--path: path('M19.3184 6.01751L10.4517 0.105976C10.3477 0.0365379 10.2254 -0.000518799 10.1002 -0.000518799C9.97513 -0.000518799 9.85282 0.0365379 9.74874 0.105976L0.882076 6.01751C0.795245 6.07529 0.724029 6.15362 0.674752 6.24555C0.625475 6.33747 0.599663 6.44014 0.599609 6.54444V12.456C0.599609 12.6675 0.706009 12.8651 0.882076 12.9829L9.74874 18.8944C9.85269 18.9636 9.97476 19.0005 10.0996 19.0005C10.2245 19.0005 10.3465 18.9636 10.4505 18.8944L19.3171 12.9829C19.404 12.9251 19.4752 12.8468 19.5245 12.7549C19.5737 12.6629 19.5996 12.5603 19.5996 12.456V6.54444C19.5996 6.44014 19.5737 6.33747 19.5245 6.24555C19.4752 6.15362 19.404 6.07529 19.3171 6.01751H19.3184ZM10.1009 11.6934L6.80881 9.49958L10.1009 7.30571L13.3929 9.49958L10.1009 11.6934ZM10.7342 6.20498V1.81598L17.8263 6.54318L14.5342 8.73704L10.7342 6.20371V6.20498ZM9.46754 6.20498L5.66754 8.73831L2.37548 6.54444L9.46754 1.81724V6.20498ZM4.52628 9.49958L1.86754 11.2716V7.72751L4.52628 9.49958ZM5.66754 10.2608L9.46754 12.7942V17.1832L2.37548 12.456L5.66754 10.2608ZM10.7342 12.7942L14.5342 10.2608L17.8263 12.4547L10.7342 17.1819V12.7942ZM15.6755 9.49958L18.3342 7.72751V11.2716L15.6755 9.49958Z');"
-          >
-          </span>
-
-          <span class="u-sr-only">Follow me on CodePen</span>
-        </a>
-      </li>
-
-      <li class="sb__item">
-        <a
-          href="https://www.linkedin.com/in/wodniack/"
-          target="_blank"
-          rel="noopener"
-        >
-          <span
-            class="sb__icon sb__icon--linkedin"
-            style="--path: path('M1.13025 14.9839H3.93671V4.6H1.13025V14.9839ZM2.53348 0.0161285C1.598 0.0161285 0.849609 0.764516 0.849609 1.7C0.849609 2.63548 1.598 3.38387 2.53348 3.38387C3.46896 3.38387 4.21735 2.63548 4.21735 1.7C4.21735 0.764516 3.46896 0.0161285 2.53348 0.0161285ZM8.70767 6.19032V4.6H5.90122V14.9839H8.70767V9.65161C8.70767 6.65806 12.5432 6.47097 12.5432 9.65161V14.9839H15.3496V8.62258C15.3496 3.57097 10.0174 3.75806 8.70767 6.19032Z');"
-          >
-          </span>
-
-          <span class="u-sr-only">Follow me on LinkedIn</span>
-        </a>
-      </li>
-    </ul><!-- .sb-socials -->
 
     <button class="sb-contrast js-contrast" type="button">
       <span
@@ -102,25 +94,185 @@ const menu = [
     <aside class="sb-availability">
       <p>
         <span class="sb__line">
-          <span class="sb__text">Coding globally from France.</span>
+          <span class="sb__text">AuraMirror</span>
         </span>
 
         <span class="sb__line">
-          <span class="sb__text">Available for freelance work →</span>
-
-          <a href="mailto:hello@wodniack.dev" class="sb__link">Hire me</a>
+          <span class="sb__text">Explore AuraMirror on GitHub -></span>
+          <a href={GITHUB_PROJECT_URL} target="_blank" rel="noopener" class="sb__link"
+            >View Project</a
+          >
         </span>
       </p>
     </aside><!-- .sb-availability -->
 
     <a
-      href="mailto:hello@wodniack.dev"
+      href={GITHUB_PROJECT_URL}
+      target="_blank"
+      rel="noopener"
       class="sb-qr-code js-qr-code"
-      title="Contact me!"
+      title="Open AuraMirror GitHub project"
     >
-      <img src="/images/qr-code.svg" alt="QR Code" width="72" height="72" />
+      <img
+        class="js-qr-image"
+        src={QR_DEFAULT_SRC}
+        alt="AuraMirror GitHub QR Code"
+        width="84"
+        height="84"
+      />
     </a><!-- .sb-qr-code -->
   </div><!-- .site-head__container -->
+
+  <section id="am-auth-overlay" class="am-auth-overlay" hidden aria-hidden="true">
+    <div class="am-auth-overlay__backdrop" data-am-close-auth></div>
+
+    <div
+      class="am-auth-overlay__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="am-auth-title"
+    >
+      <header class="am-auth-overlay__header">
+        <div>
+          <p class="am-auth-overlay__eyebrow">Module 00</p>
+          <h2 id="am-auth-title" class="am-auth-overlay__title">Aura<br />Mirror</h2>
+          <p class="am-auth-overlay__sub">AI Smart Wardrobe</p>
+        </div>
+
+        <button
+          id="am-auth-close"
+          class="am-styling-close"
+          type="button"
+          aria-label="Close authentication dialog"
+        >
+          Close
+        </button>
+      </header>
+
+      <div class="am-auth-overlay__tabs" role="tablist" aria-label="Authentication tabs">
+        <button
+          id="am-auth-tab-login"
+          class="am-auth-tab is-active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="am-auth-panel-login"
+          data-auth-tab="login"
+        >
+          Sign In
+        </button>
+        <button
+          id="am-auth-tab-register"
+          class="am-auth-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="am-auth-panel-register"
+          data-auth-tab="register"
+        >
+          Register
+        </button>
+      </div>
+
+      <div class="am-auth-overlay__body">
+        <p id="am-auth-status" class="am-status am-auth-status">
+          Sign in to connect the live wardrobe, remote try-on, and recommendation APIs.
+        </p>
+
+        <section
+          id="am-auth-panel-login"
+          class="am-auth-panel"
+          role="tabpanel"
+          aria-labelledby="am-auth-tab-login"
+        >
+          <form id="am-login-form" class="am-auth-form">
+            <label class="am-label">
+              Email
+              <input
+                id="am-login-email"
+                class="am-input"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+
+            <label class="am-label">
+              Password
+              <input
+                id="am-login-password"
+                class="am-input"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+              />
+            </label>
+
+            <button class="am-button am-auth-overlay__submit" type="submit">Sign In</button>
+          </form>
+        </section>
+
+        <section
+          id="am-auth-panel-register"
+          class="am-auth-panel"
+          role="tabpanel"
+          aria-labelledby="am-auth-tab-register"
+          hidden
+        >
+          <form id="am-register-form" class="am-auth-form">
+            <label class="am-label">
+              Name
+              <input
+                id="am-register-name"
+                class="am-input"
+                type="text"
+                name="name"
+                autocomplete="name"
+                placeholder="Your name"
+                required
+              />
+            </label>
+
+            <label class="am-label">
+              Email
+              <input
+                id="am-register-email"
+                class="am-input"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+
+            <label class="am-label">
+              Password
+              <input
+                id="am-register-password"
+                class="am-input"
+                type="password"
+                name="password"
+                autocomplete="new-password"
+                placeholder="Minimum 6 characters"
+                required
+              />
+            </label>
+
+            <button class="am-button am-auth-overlay__submit" type="submit">Create Account</button>
+          </form>
+        </section>
+      </div>
+
+      <footer class="am-auth-overlay__footer">
+        <span class="am-auth-overlay__footer-text">Your wardrobe / your data / your style.</span>
+      </footer>
+    </div>
+  </section>
 </header>
 
 <script>
@@ -128,6 +280,7 @@ const menu = [
   import Ticker from '../utils/Ticker'
 
   import { gsap } from 'gsap'
+  import { QR_DEFAULT_SRC, QR_LIGHT_SRC } from '../auramirror/config'
 
   class Section {
     el: HTMLElement
@@ -135,6 +288,8 @@ const menu = [
     console: HTMLElement
     contrastMask: HTMLElement
     links: NodeListOf<HTMLElement>
+    qrCode: HTMLElement
+    qrImage: HTMLImageElement
 
     messages: string[]
     message: string
@@ -145,85 +300,28 @@ const menu = [
     canWrite: boolean
     isPaused: boolean
 
-    /**
-     * Constructor
-     */
     constructor() {
-      // Elements
       this.el = document.querySelector('.site-head')
       this.contrastButton = document.querySelector('.js-contrast')
       this.console = document.querySelector('.js-console')
       this.contrastMask = document.querySelector('.js-contrast-mask')
-      this.links = this.el.querySelectorAll('.js-menu-link')
+      this.links = this.el.querySelectorAll('a.js-menu-link')
+      this.qrCode = this.el.querySelector('.js-qr-code')
+      this.qrImage = this.el.querySelector('.js-qr-image')
 
-      // Properties
       this.messages = [
-        'Preparing for inevitable debugging',
-        'Compiling designer dreams…into developer nightmares',
-        'Please wait while I overthink this',
-        'Optimizing… but nothing’s perfect',
-        'Configuring the next minor inconvenience',
-        'Fetching assets… contemplating the futility of it all',
-        'Re-routing your expectations… expect delays',
-        'Trying to animate enthusiasm… it’s not going well',
-        'Stuck in an infinite loop',
-        'Loading… still pointless',
-        'Simulating progress… sort of',
-        'This will probably break soon',
-        'Simulating something useful',
-        'Progress bar full of lies',
-        'Finding meaning in the code',
-        'Calculating failure probabilities',
-        'Please wait… indefinitely',
-        'Loading… almost there!',
-        'Animating pixels with love',
-        'Integrating magic and code',
-        'Optimizing creativity… stand by',
-        'Design and code handshake',
-        'Fetching creativity… almost done!',
-        'Preparing awesomeness',
-        'Simulating brilliance… probably',
-        'Everything is under control',
-        'Loading coolness… almost ready',
-        'Calibrating designer dreams',
-        'Fusing design and animation',
-        'Running creativity protocols',
-        'Crafting magic… please wait',
-        'Making things pretty… hold on',
-        'Loading… this might take a bit',
-        'Animating pixels… somewhat precisely',
-        'Integrating code and reality',
-        'Halfway done… maybe',
-        'Optimizing… cautiously hopeful',
-        'Design meets code… fingers crossed',
-        'Fetching some interesting stuff',
-        'Preparing… slowly but surely',
-        'Aligning pixels… carefully',
-        'Calibrating… what exactly? Good question',
-        'Waiting… patience is key',
-        'Simulating… something, probably',
-        'Loading… feel free to blink',
-        'Running some clever algorithms',
-        'Almost there… give or take',
-        'Integrating… like a pro',
-        'Crafting… without breaking anything',
-        'Adjusting fonts… nearly invisible',
-        'Piecing it together… stay tuned',
-        'Loading… nothing to see yet',
-        'Running final checks… hopefully',
-        'Almost ready… trust me',
-        'Building… it’s getting there',
-        'Loading… but why rush?',
-        'Please wait… or don’t, whatever',
-        'Initializing… prepare for bugs',
-        'Optimizing… but who cares?',
-        'Deploying… probably not broken',
-        'Making things work… hopefully',
-        'Running… but not too fast',
-        'Testing patience… stay calm',
-        'Initializing… no promises',
-        'Loading… but who’s counting?',
-        'Loading… could be worse',
+        'Preparing virtual wardrobe routines',
+        'Loading avatar systems',
+        'Syncing styling modules',
+        'Calibrating AuraMirror',
+        'Preparing preview surfaces',
+        'Checking wardrobe signals',
+        'Aligning interface layers',
+        'Connecting style and motion',
+        'Building the next fitting scene',
+        'Routing every click with care',
+        'Rendering the smart mirror shell',
+        'Preparing recommendation history',
       ]
       this.message = ''
       this.messageLineBreak = false
@@ -233,20 +331,14 @@ const menu = [
       this.canWrite = false
       this.isPaused = true
 
-      // Init
       Ticker.nextTick(this.init, this)
     }
 
-    /**
-     * Init
-     */
     init() {
       this.bindEvents()
+      this.syncQrTheme()
     }
 
-    /**
-     * Bind events
-     */
     bindEvents() {
       this.contrastButton.addEventListener(
         'click',
@@ -265,9 +357,19 @@ const menu = [
       })
     }
 
-    /**
-     * Intersect handler
-     */
+    syncQrTheme() {
+      if (!this.qrCode || !this.qrImage) return
+
+      const contrasted =
+        document.documentElement.classList.contains('theme-contrasted')
+
+      this.qrImage.src = contrasted ? QR_DEFAULT_SRC : QR_LIGHT_SRC
+
+      const bg = contrasted ? '#fff0eb' : '#f40c3f'
+      this.qrCode.style.background = bg
+      this.qrImage.style.background = bg
+    }
+
     onIntersect(e) {
       this.isPaused = !e.detail.isIntersecting
 
@@ -278,14 +380,9 @@ const menu = [
       }
     }
 
-    /**
-     * Intro
-     */
     intro() {
       const logo = this.el.querySelector('.js-logo')
       const menuItems = this.el.querySelectorAll('.js-menu-item')
-      const qrCode = this.el.querySelector('.js-qr-code')
-
       const items = [logo, ...menuItems]
 
       const tl = gsap.timeline()
@@ -316,7 +413,7 @@ const menu = [
       )
 
       tl.fromTo(
-        qrCode,
+        this.qrCode,
         {
           '--bg-p': '0%',
         },
@@ -335,11 +432,12 @@ const menu = [
         null,
         1.5
       )
+
+      tl.set(this.el, {
+        clearProps: 'transform',
+      })
     }
 
-    /**
-     * Toggle contrast
-     */
     toggleContrast() {
       let fromX = '0'
       let toX = '-100%'
@@ -367,6 +465,8 @@ const menu = [
               document.documentElement.classList.add('theme-contrasted')
             }
 
+            this.syncQrTheme()
+
             Emitter.emit(
               'contrastchange',
               document.documentElement.classList.contains('theme-contrasted')
@@ -380,11 +480,11 @@ const menu = [
       if (toX !== '0') {
         document.documentElement.classList.add('theme-contrasted')
       }
+
+      this.syncQrTheme()
+      window.setTimeout(() => this.syncQrTheme(), 1050)
     }
 
-    /**
-     * Move to section
-     */
     moveToSection(e) {
       e.preventDefault()
 
@@ -397,9 +497,6 @@ const menu = [
       })
     }
 
-    /**
-     * Update console
-     */
     updateConsole(time) {
       if (!this.canWrite || time - this.lastTypeTime < this.writeDelay) {
         return
@@ -416,27 +513,16 @@ const menu = [
         const char = this.message.charAt(0)
         this.message = this.message.substring(1)
 
-        if (char === ',') {
+        if (char === ',' || char === ' ') {
           this.writeDelay = 100
-        } else if (char === ' ') {
-          this.writeDelay = 100
-        } else if (char === '') {
-          this.writeDelay = 200
-        } else if (char === '…') {
-          this.writeDelay = 400
-        } else if (char === '.') {
-          this.writeDelay = 400
+        } else if (char === '' || char === '.') {
+          this.writeDelay = 300
         } else {
           this.writeDelay = 20
         }
 
         this.console.textContent += char
-
-        if (char === '…') {
-          this.messageLineBreak = true
-        } else {
-          this.messageLineBreak = false
-        }
+        this.messageLineBreak = false
       }
 
       this.console.textContent = this.console.textContent
@@ -447,9 +533,6 @@ const menu = [
       this.lastTypeTime = time
     }
 
-    /**
-     * Get random message
-     */
     getRandomMessage() {
       let message =
         this.messages[Math.floor(Math.random() * this.messages.length)]
@@ -459,7 +542,6 @@ const menu = [
       }
 
       this.lastMessage = message
-
       return message
     }
   }
@@ -534,17 +616,6 @@ const menu = [
         display: none;
       }
 
-      @keyframes site-head-caret {
-        0%,
-        100% {
-          opacity: 1;
-        }
-
-        50% {
-          opacity: 0;
-        }
-      }
-
       &__inner {
         @include flex(column, flex-start, flex-end);
 
@@ -566,7 +637,7 @@ const menu = [
       }
 
       .sb__list {
-        @include flex(row, center, flex-start);
+        @include flex(row, stretch, flex-start);
 
         margin: 0;
         padding: 0;
@@ -599,22 +670,29 @@ const menu = [
         }
       }
 
-      a {
+      .js-menu-link {
         display: block;
-        padding: 2rem 3rem;
+        height: 100%;
+        padding: 0 3rem;
 
         color: color(secondary);
         font: 400 14px / 1 font-family(fraktion);
         letter-spacing: 0.05em;
         text-decoration: none;
         text-transform: uppercase;
+        white-space: nowrap;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+
+        @include flex(row, center, center);
 
         @include mq(desktop-sm) {
-          padding: 2rem;
+          padding: 0 2rem;
         }
 
         @include mq(desktop-xs) {
-          padding: 2rem 1rem;
+          padding: 0 1rem;
         }
 
         @keyframes blink-in {
@@ -640,125 +718,17 @@ const menu = [
           }
         }
       }
-    }
 
-    .sb-socials {
-      margin: 0;
-      padding: 0;
+      .am-auth-nav-item + .am-auth-nav-item .js-menu-link {
+        padding-left: 1.5rem;
 
-      background: linear-gradient(
-        0deg,
-        transparent calc(50% - 1px),
-        color(secondary) calc(50% - 1px),
-        color(secondary) 50%,
-        transparent 50%
-      );
-      border-left: 1px solid color(secondary);
-      list-style: none;
-
-      @include mq(tablet) {
-        order: 4;
-      }
-
-      @include mq(phone) {
-        @include flex(row, center, center);
-
-        order: 3;
-
-        margin-left: auto;
-
-        background: none;
-        border-left: 0;
-      }
-
-      .sb__item {
-        margin: 0;
-        padding: 0;
-
-        @include mq(phone) {
-          @include flex(column, center, center);
-
-          height: 100%;
-
-          border-left: 1px solid color(secondary);
-        }
-      }
-
-      .sb__icon {
-        background: color(secondary);
-
-        clip-path: var(--path);
-
-        &:before {
-          position: absolute;
-          top: 0;
-          left: 0;
-
-          display: block;
-          width: 100%;
-          height: 100%;
-
-          background: color(primary);
-          scale: 0 1;
-          transform-origin: 0 50%;
-
-          content: '';
+        @include mq(desktop-sm) {
+          padding-left: 1.25rem;
         }
 
-        &--codepen {
-          width: 20px;
-          height: 19px;
+        @include mq(desktop-xs) {
+          padding-left: 1rem;
         }
-
-        &--linkedin {
-          width: 16px;
-          height: 15px;
-        }
-      }
-
-      a {
-        @include flex(row, center, center);
-
-        position: relative;
-
-        width: 48px;
-        height: 48px;
-
-        @include mq(phone) {
-          height: 100%;
-        }
-
-        &:before {
-          position: absolute;
-          top: 0;
-          left: 0;
-
-          width: 100%;
-          height: 100%;
-
-          background: color(secondary);
-          scale: 0 1;
-          transform-origin: 0 50%;
-
-          content: '';
-        }
-
-        &:hover {
-          &:before {
-            scale: 1 1;
-          }
-
-          .sb__icon {
-            &:before {
-              scale: 1 1;
-            }
-          }
-        }
-      }
-
-      a:before,
-      .sb__icon:before {
-        transition: scale 0.3s ease(in-out-expo);
       }
     }
 
@@ -778,7 +748,7 @@ const menu = [
       cursor: pointer;
 
       @include mq(tablet) {
-        order: 5;
+        order: 4;
       }
 
       @include mq(phone) {
@@ -860,7 +830,6 @@ const menu = [
 
       @include mq(tablet-sm) {
         flex-grow: 1;
-
         border-left: 0;
       }
 
@@ -868,7 +837,6 @@ const menu = [
         @include flex(column, center, center);
 
         flex-grow: 0;
-
         background: none;
         border-left: 1px solid color(secondary);
         order: 3;
@@ -891,7 +859,6 @@ const menu = [
 
       a {
         position: relative;
-
         display: inline-block;
 
         color: color(secondary);
@@ -928,7 +895,6 @@ const menu = [
       --bg-p: 0%;
 
       position: relative;
-
       display: block;
       padding: 0.75rem;
 
@@ -936,6 +902,12 @@ const menu = [
 
       @include mq(desktop-sm) {
         display: none;
+      }
+
+      img {
+        position: relative;
+        z-index: 1;
+        display: block;
       }
 
       &:before {

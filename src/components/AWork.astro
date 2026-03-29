@@ -1,107 +1,50 @@
 ---
-const { caption, cssClass, index, site, src, total } = Astro.props
-
-// A random string with the syntax '[a-z][0-9]{3}-index-total'
-const key = Math.random().toString(36).slice(2, 6) + '-' + index + '/' + total
+const { caption, cssClass, index, palette, total } = Astro.props
+const key = `wrd-${index}`
 ---
 
 <a-work class={cssClass}>
   <div class="a__inner">
-    <a href={site} target="_blank">
-      <video
-        data-src={src}
-        class="a__video js-video"
-        loop
-        muted
-        playsinline
-        width="1082"
-        height="636"
-      >
-      </video>
+    <div class="a__visual js-media" style={`--palette:${palette};`}>
+      <div class="a__visual__glow"></div>
+      <div class="a__visual__grid"></div>
+      <div class="a__visual__plate"></div>
+      <div class="a__visual__rail"></div>
+    </div>
 
-      <div class="a__caption">
-        <div class="a__caption__text">
-          {caption}
-        </div><!-- .a__caption__text -->
+    <div class="a__caption">
+      <div class="a__caption__text">
+        {caption}
+      </div>
 
-        <div class="a__caption__key">
-          #{key}
-        </div><!-- .a__caption__key -->
-      </div><!-- .a__caption -->
-    </a>
-  </div><!-- .a__inner -->
+      <div class="a__caption__key">
+        #{key} / {total}
+      </div>
+    </div>
+  </div>
 </a-work>
 
 <script>
   class AWork extends HTMLElement {
     static observedAttributes = ['progress']
 
-    link: HTMLAnchorElement
-    video: HTMLVideoElement
+    isVisible: boolean
 
-    isPlaying: boolean
-
-    /**
-     * Init
-     */
     connectedCallback() {
-      // Elements
-      this.video = this.querySelector('.js-video')
-      this.link = this.querySelector('a')
-
-      // Properties
-      this.isPlaying = false
-
-      // Events
-      this.link.addEventListener('click', this.onClick.bind(this))
+      this.isVisible = false
     }
 
-    /**
-     * Attribute changed
-     */
     attributeChangedCallback(name, oldValue, newValue) {
       if (name === 'progress') {
         this.style.setProperty('--progress', newValue)
 
         if (newValue === '1' || newValue === '-1') {
-          if (this.isPlaying) {
-            this.outView()
-          }
-        } else {
-          if (!this.isPlaying) {
-            this.inView()
-          }
+          this.classList.remove('is-inview')
+          this.isVisible = false
+        } else if (!this.isVisible) {
+          this.classList.add('is-inview')
+          this.isVisible = true
         }
-      }
-    }
-
-    /**
-     * Gets in view
-     */
-    inView() {
-      this.video.play()
-      this.isPlaying = true
-
-      this.classList.add('is-inview')
-    }
-
-    /**
-     * Gets out view
-     */
-    outView() {
-      this.video.pause()
-      this.isPlaying = false
-
-      this.classList.remove('is-inview')
-    }
-
-    /**
-     * On click
-     */
-    onClick(event: MouseEvent) {
-      if (this.link.href.includes('#')) {
-        event.preventDefault()
-        return false
       }
     }
   }
@@ -130,30 +73,67 @@ const key = Math.random().toString(36).slice(2, 6) + '-' + index + '/' + total
       padding: 0.25rem;
     }
 
-    a {
-      display: block;
-
-      text-decoration: none;
-    }
-
     .a__inner {
       display: block;
       margin: 0;
       padding: 0;
     }
 
-    .a__video {
-      display: block;
-
-      width: auto;
+    .a__visual {
+      position: relative;
+      width: min(50vw, 54rem);
       max-width: 50vw;
-      height: auto;
-      max-height: 50vh;
+      aspect-ratio: 1082 / 636;
+      overflow: hidden;
+      border: 1px solid rgba(243, 236, 229, 0.16);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.18), transparent 24%),
+        linear-gradient(135deg, rgba(22, 0, 0, 0.96), rgba(244, 12, 63, 0.28)),
+        var(--palette, linear-gradient(135deg, #25141a, #6f2035, #c59d8c));
 
       @include mq(phone) {
         max-width: 80vw;
-        max-height: 80vh;
       }
+    }
+
+    .a__visual__glow,
+    .a__visual__grid,
+    .a__visual__plate,
+    .a__visual__rail {
+      position: absolute;
+      inset: 0;
+    }
+
+    .a__visual__glow {
+      background:
+        radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.18), transparent 26%),
+        radial-gradient(circle at 30% 75%, rgba(244, 12, 63, 0.22), transparent 28%);
+      mix-blend-mode: screen;
+    }
+
+    .a__visual__grid {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      background-size: 2.75rem 2.75rem;
+      opacity: 0.32;
+    }
+
+    .a__visual__plate {
+      inset: 13% 16%;
+      border: 1px solid rgba(243, 236, 229, 0.58);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
+        rgba(22, 0, 0, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(244, 12, 63, 0.18);
+    }
+
+    .a__visual__rail {
+      inset: auto 10% 12% 10%;
+      height: 0.8rem;
+      background:
+        linear-gradient(90deg, rgba(243, 236, 229, 0.1), rgba(243, 236, 229, 0.88), rgba(243, 236, 229, 0.1));
+      box-shadow: 0 0 1.2rem rgba(243, 236, 229, 0.18);
     }
 
     .a__caption {

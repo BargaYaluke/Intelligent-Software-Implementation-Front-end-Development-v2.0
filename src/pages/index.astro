@@ -5,7 +5,6 @@ import SiteScrollbar from '../components/SiteScrollbar.astro'
 import SHero from '../components/SHero.astro'
 import SAbout from '../components/SAbout.astro'
 import SWork from '../components/SWork.astro'
-import SMyWay from '../components/SMyWay.astro'
 import SCTA from '../components/SCTA.astro'
 import ASeparator from '../components/ASeparator.astro'
 
@@ -16,16 +15,16 @@ import '../styles/global.scss'
   <head>
     <meta charset="utf-8" />
 
-    <title>AW 2025 Portfolio – Open Source Edition</title>
+    <title>AuraMirror | AI Smart Wardrobe</title>
 
     <meta
       name="description"
-      content="Take a peek behind the scenes of a senior dev’s awarded portfolio. Clone it, learn from it, build your own. But don’t just steal it—the community will call you out, and you’ll doom yourself to eternal mediocrity." />
+      content="AuraMirror is an AI wardrobe mirror for avatar generation, virtual try-on, smart styling recommendations, and recommendation history." />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
 
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="canonical" href="https://public.wodniack.dev/" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://felixzijunliang.github.io/wardrobe/" />
 
     <link
       rel="icon"
@@ -40,7 +39,7 @@ import '../styles/global.scss'
       sizes="180x180"
       href="/icons/apple-touch-icon.png"
     />
-    <meta name="apple-mobile-web-app-title" content="AW Portfolio" />
+    <meta name="apple-mobile-web-app-title" content="AuraMirror" />
 
     <meta name="theme-color" content="#160000" />
     <meta name="msapplication-navbutton-color" content="#160000" />
@@ -48,15 +47,17 @@ import '../styles/global.scss'
 
     <meta property="og:locale" content="en_GB" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Antoine Wodniack 2025 Portfolio – Open Source Edition" />
-    <meta property="og:description" content="Take a peek behind the scenes of a senior dev’s awarded portfolio. Clone it, learn from it, build your own. But don’t just steal it—the community will call you out, and you’ll doom yourself to eternal mediocrity." />
-    <meta property="og:url" content="https://public.wodniack.dev/" />
-    <meta property="og:site_name" content="Antoine Wodniack 2025 Portfolio – Open Source Edition" />
-    <meta property="og:image" content="https://public.wodniack.dev/images/aw-creative-developer.png" />
+    <meta property="og:title" content="AuraMirror | AI Smart Wardrobe" />
+    <meta
+      property="og:description"
+      content="Avatar generation, virtual try-on, AI outfit recommendations, and styling history in one experimental wardrobe interface." />
+    <meta property="og:url" content="https://felixzijunliang.github.io/wardrobe/" />
+    <meta property="og:site_name" content="AuraMirror" />
+    <meta property="og:image" content="https://felixzijunliang.github.io/wardrobe/images/aw-creative-developer.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="675" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://public.wodniack.dev/images/aw-creative-developer.png" />
+    <meta name="twitter:image" content="https://felixzijunliang.github.io/wardrobe/images/aw-creative-developer.png" />
 
     <link
       rel="preload"
@@ -109,8 +110,6 @@ import '../styles/global.scss'
 
       <ASeparator style="secondary" />
 
-      <SMyWay />
-
       <SCTA />
 
       <SiteFoot />
@@ -148,6 +147,7 @@ import '../styles/global.scss'
   <script>
     import Emitter from '../utils/Emitter'
     import Ticker from '../utils/Ticker'
+    import { initAuraMirror } from '../auramirror/index.js'
 
     import Lenis from 'lenis'
 
@@ -183,7 +183,6 @@ import '../styles/global.scss'
        * Constructor
        */
       constructor() {
-        // OS class
         let os = 'unknown'
         if (navigator.userAgent.indexOf('Win') !== -1) {
           os = 'windows'
@@ -196,7 +195,6 @@ import '../styles/global.scss'
         }
         document.documentElement.classList.add(`is-${os}`)
 
-        // Browser class
         let browser = 'unknown'
         if (navigator.userAgent.indexOf('Firefox') !== -1) {
           browser = 'firefox'
@@ -276,7 +274,6 @@ import '../styles/global.scss'
           observer.observe(el)
         })
 
-        // Site loaded event
         if (document.readyState === 'complete') {
           this.siteLoaded()
         } else {
@@ -389,7 +386,6 @@ import '../styles/global.scss'
        * Intro
        */
       intro() {
-        // Selectors
         const wrapper: HTMLElement = document.querySelector('.js-site-wrapper')
         const intro: HTMLElement = document.querySelector('.js-intro')
         const mount: HTMLElement = document.querySelector('.js-mount')
@@ -399,7 +395,6 @@ import '../styles/global.scss'
         const borderLeft: HTMLElement = intro.querySelector('.js-border-left')
         const borderRight: HTMLElement = intro.querySelector('.js-border-right')
 
-        // Timeline
         const tl = gsap.timeline()
 
         tl.set(wrapper, {
@@ -498,7 +493,6 @@ import '../styles/global.scss'
           },
           null,
           '-=1.85'
-          // 0.5
         )
 
         tl.call(
@@ -514,19 +508,19 @@ import '../styles/global.scss'
           },
           null,
           5
-          // 0
         )
       }
     }
 
     const site = new Site()
 
-    // Site init on DOM ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', site.init, { once: true })
+      document.addEventListener('DOMContentLoaded', () => site.init(), { once: true })
     } else {
       site.init()
     }
+
+    initAuraMirror()
   </script>
 
   <style lang="scss">
